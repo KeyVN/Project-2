@@ -1,0 +1,38 @@
+File,Status,Objective (Baseline),Time (s),Facilities Opened,Note
+cap41.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap42.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap43.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap44.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap61.txt,OPTIMAL,932615.75,0.1050,11,
+cap62.txt,OPTIMAL,977799.4000000001,0.1000,9,
+cap63.txt,OPTIMAL,1014099.6125,0.2080,8,
+cap64.txt,OPTIMAL,1053197.4375000002,0.4950,6,
+cap71.txt,OPTIMAL,932615.75,0.0810,11,
+cap72.txt,OPTIMAL,977799.4000000001,0.0860,9,
+cap73.txt,OPTIMAL,1010641.4500000002,0.0820,5,
+cap74.txt,OPTIMAL,1034976.9750000001,0.0850,4,
+cap81.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap82.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap83.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap84.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap91.txt,OPTIMAL,796648.4375000001,0.1700,15,
+cap92.txt,OPTIMAL,858109.3250000001,0.1840,12,
+cap93.txt,OPTIMAL,900760.1125,0.3920,9,
+cap94.txt,OPTIMAL,950608.425,0.8970,7,
+cap101.txt,OPTIMAL,796648.4375000001,0.0550,15,
+cap102.txt,OPTIMAL,854704.2000000001,0.0810,11,
+cap103.txt,OPTIMAL,893782.1125,0.1050,8,
+cap104.txt,OPTIMAL,928941.7500000001,0.0910,4,
+cap111.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap112.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap113.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap114.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
+cap121.txt,OPTIMAL,793439.5625000001,0.2840,15,
+cap122.txt,OPTIMAL,854900.4500000001,0.2160,12,
+cap123.txt,OPTIMAL,898266.0750000001,0.4290,9,
+cap124.txt,OPTIMAL,950608.425,1.5530,7,
+cap131.txt,OPTIMAL,793439.5625000001,0.1540,15,
+cap132.txt,OPTIMAL,851495.3250000001,0.1510,11,
+cap133.txt,OPTIMAL,893076.7125000001,0.1460,8,
+cap134.txt,OPTIMAL,928941.7500000001,0.2150,4,
+cap51.txt,INFEASIBLE,,N/A,0,Vô nghiệm do sức chứa quá gắt
