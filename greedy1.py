@@ -3,11 +3,10 @@ import time
 import csv
 from readfile import parse_cap_file
 
+METHOD = "Greedy1"
+
+
 def solve_greedy_1(data):
-    """
-    Thuật toán Greedy 1 (Tối ưu hóa toàn diện): 
-    Dùng chiến lược Knapsack kết hợp Tiền xử lý (Pre-computation) để tăng tốc độ.
-    """
     I = data['num_facilities']
     J = data['num_customers']
     f = data['fixed_costs']
@@ -19,106 +18,72 @@ def solve_greedy_1(data):
     is_open = [False] * I
     remaining_capacity = list(s)
     total_cost = 0
-    unassigned_customers = set(range(J))
+    unassigned = set(range(J))
+    start = time.time()
 
-    start_time = time.time()
-
-    max_c = [max(c[i][j] for i in range(I)) for j in range(J)]
-
-    facility_candidates = []
-    for i in range(I):
-        cands = []
-        for j in range(J):
-            savings = max_c[j] - c[i][j]
-            eff = savings / d[j] if d[j] > 0 else float('inf')
-            cands.append({'id': j, 'savings': savings, 'eff': eff, 'dem': d[j]})
-        
-        cands.sort(key=lambda x: x['eff'], reverse=True)
-        facility_candidates.append(cands)
-
-    while unassigned_customers:
+    while unassigned:
         best_facility = -1
         best_ratio = -1.0
-        best_assigned_list = []
+        best_assignment = []
 
         for i in range(I):
-            if is_open[i] and remaining_capacity[i] <= 0:
-                continue
-            
-            cap = remaining_capacity[i]
-            current_benefit = 0
-            current_assigned = []
-            
-            for cand in facility_candidates[i]:
-                if cand['id'] in unassigned_customers:
-                    if cand['dem'] <= cap:
-                        current_benefit += cand['savings']
-                        current_assigned.append(cand['id'])
-                        cap -= cand['dem']
-            
-            if not current_assigned:
-                continue
-
             if is_open[i]:
-                cost_to_open = 1e-6 
-            else:
-                cost_to_open = f[i] if f[i] > 0 else 1e-6
-
-            ratio = current_benefit / cost_to_open
-            
+                continue
+            candidates = [(j, d[j], c[i][j]) for j in unassigned if d[j] <= s[i]]
+            candidates.sort(key=lambda x: x[2])
+            cap = s[i]
+            packed = []
+            serve_cost = 0
+            saved_cost = 0
+            for j, dem, cost in candidates:
+                if dem <= cap:
+                    packed.append(j)
+                    serve_cost += cost
+                    saved_cost += max(c[k][j] for k in range(I)) - cost
+                    cap -= dem
+            if not packed:
+                continue
+            ratio = saved_cost / (f[i] + serve_cost) if (f[i] + serve_cost) > 0 else 0
             if ratio > best_ratio:
                 best_ratio = ratio
                 best_facility = i
-                best_assigned_list = current_assigned
+                best_assignment = packed
 
         if best_facility == -1:
-            break 
+            return None
 
-        if not is_open[best_facility]:
-            is_open[best_facility] = True
-            total_cost += f[best_facility]
-        
-        for j in best_assigned_list:
+        is_open[best_facility] = True
+        total_cost += f[best_facility]
+        for j in best_assignment:
             assigned_to[j] = best_facility
             remaining_capacity[best_facility] -= d[j]
             total_cost += c[best_facility][j]
-            unassigned_customers.remove(j)
-
-    end_time = time.time()
-    
-    if len(unassigned_customers) > 0:
-        return None
+            unassigned.remove(j)
 
     return {
+        "status": "FEASIBLE",
         "objective": total_cost,
-        "time": end_time - start_time,
-        "opened_count": sum(is_open)
+        "time": time.time() - start,
+        "opened_facilities": sum(is_open),
+        "assigned_to": assigned_to,
+        "is_open": is_open,
     }
 
+
 if __name__ == "__main__":
-    test_files = []
-    for i in [4, 6, 7, 8, 9, 10, 11, 12, 13]:
-        for j in range(1, 5): test_files.append(f"cap{i}{j}.txt")
-    test_files.append("cap51.txt")
-    # test_files.extend(["capa.txt", "capb.txt", "capc.txt"])
-
-    results_file = "results_greedy1.csv"
-    print(f"Đang chạy Greedy 1 trên {len(test_files)} file...")
-
-    with open(results_file, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["File", "Objective", "Time (s)", "Facilities"])
-
-        for filename in test_files:
-            path = os.path.join("data", filename)
-            data = parse_cap_file(path)
-            if data:
-                res = solve_greedy_1(data)
-                if res:
-                    writer.writerow([filename, res['objective'], f"{res['time']:.6f}", res['opened_count']])
-                    print(f" {filename:<12}: Obj = {res['objective']:,.2f} | Time = {res['time']:.4f}s")
-                else:
-                    writer.writerow([filename, "INFEASIBLE", "N/A", "0"])
-                    print(f" {filename:<12}: Vô nghiệm")
-
-    print(f"\nHoàn tất! Kết quả lưu tại {results_file}")
+    test_files = [f"cap{i}{j}.txt" for i in [4,6,7,8,9,10,11,12,13] for j in range(1,5)] + ["cap51.txt"]
+    input_dir = "data_preprocessed"
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    out = os.path.join(output_dir, "results_greedy1.csv")
+    with open(out, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["File", "Status", "Objective (Baseline)", "Time (s)", "Facilities Opened", "Note"])
+        for fn in test_files:
+            data = parse_cap_file(os.path.join(input_dir, fn))
+            res = solve_greedy_1(data) if data else None
+            if res:
+                w.writerow([fn, res["status"], f"{res['objective']:.4f}", f"{res['time']:.4f}", res["opened_facilities"], METHOD])
+            else:
+                w.writerow([fn, "ERROR", "N/A", "N/A", "0", METHOD])
+    print(f"Saved {out}")
